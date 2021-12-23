@@ -13,6 +13,7 @@ import (
 type CliArgs struct {
 	wordCount int
 	lang      string
+	verbose   bool
 }
 
 func init() {
@@ -33,28 +34,32 @@ func assertAvailablePRNG() {
 func main() {
 	args := readCliArgs()
 	bip39 := readBip39Words(args)
-	words := generateRandomWords(args, bip39)
-	for _, word := range words {
-		fmt.Println(word)
+	numbers := generateRandomNumbers(args.wordCount, len(bip39))
+	for _, num := range numbers {
+		if args.verbose {
+			fmt.Printf("%4v:", num)
+		}
+		fmt.Println(bip39[num])
 	}
 }
 
-func generateRandomWords(args CliArgs, bip39 []string) []string {
-	var words []string
-	for i := 0; i < args.wordCount; i++ {
-		num, err := rand.Int(rand.Reader, big.NewInt(int64(len(bip39))))
+func generateRandomNumbers(count int, max int) []int {
+	var numbers []int
+	for i := 0; i < count; i++ {
+		num, err := rand.Int(rand.Reader, big.NewInt(int64(max)))
 		if err != nil {
 			panic(err)
 		}
-		words = append(words, bip39[num.Int64()])
+		numbers = append(numbers, int(num.Int64()))
 	}
-	return words
+	return numbers
 }
 
 func readCliArgs() CliArgs {
 	args := CliArgs{}
 	flag.IntVar(&args.wordCount, "n", 12, "Specify number of BIP39 words to generate. Default is 12.")
 	flag.StringVar(&args.lang, "l", "english", "Specify language from which BIP39 list to select from. See list of available languages at https://github.com/bitcoin/bips/tree/master/bip-0039. Default is english.")
+	flag.BoolVar(&args.verbose, "v", false, "Print indexes of each word in the BIP39 alongside the word. Default is false.")
 	flag.Parse()
 	return args
 }
