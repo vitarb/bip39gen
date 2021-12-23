@@ -1,6 +1,7 @@
 # bip39gen
 
-bip39gen is a simple utility for generating crypto secure BIP39 passphrases of arbitrary length.
+bip39gen is a simple utility for generating crypto secure BIP39 passphrases of arbitrary length on your computer.
+Don't trust, verify!
 
 ## Notes
 Each word provides 11 bits of entropy (2048 words = 2^11).
