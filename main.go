@@ -12,6 +12,7 @@ import (
 
 type CliArgs struct {
 	wordCount int
+	lang      string
 }
 
 func init() {
@@ -31,7 +32,7 @@ func assertAvailablePRNG() {
 
 func main() {
 	args := readCliArgs()
-	bip39 := readBip39Words()
+	bip39 := readBip39Words(args)
 	words := generateRandomWords(args, bip39)
 	for _, word := range words {
 		fmt.Println(word)
@@ -53,12 +54,13 @@ func generateRandomWords(args CliArgs, bip39 []string) []string {
 func readCliArgs() CliArgs {
 	args := CliArgs{}
 	flag.IntVar(&args.wordCount, "n", 12, "Specify number of BIP39 words to generate. Default is 12.")
+	flag.StringVar(&args.lang, "l", "english", "Specify language from which BIP39 list to select from. See list of available languages at https://github.com/bitcoin/bips/tree/master/bip-0039. Default is english.")
 	flag.Parse()
 	return args
 }
 
-func readBip39Words() []string {
-	readFile, err := os.Open("bips/bip-0039/english.txt")
+func readBip39Words(args CliArgs) []string {
+	readFile, err := os.Open(fmt.Sprintf("bips/bip-0039/%v.txt", args.lang))
 	if err != nil {
 		panic(err)
 	}

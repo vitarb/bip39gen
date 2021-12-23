@@ -17,3 +17,7 @@ Run it passing desired number of words to be generated (defaults to 12):
 ./bip39gen -n 6
 ```
 
+English version of BIP39 is default but you can use other languages for which there is BIP39 [list available](https://github.com/bitcoin/bips/tree/master/bip-0039).
+```bash
+./bip39gen -l spanish
+```
